@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${modo == 'editar'} ? 'Editar Estudiante · UniGestión' : 'Nuevo Estudiante · UniGestión'">Formulario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-title">UniGestión</div>
+        <div class="brand-sub">Sistema universitario</div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Principal</div>
+        <a href="/dashboard" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <div class="nav-section-label">Gestión</div>
+        <a href="/estudiantes" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Estudiantes
+        </a>
+        <a href="/proyectos" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Proyectos de Grado
+        </a>
+    </nav>
+    <div class="sidebar-footer">Proyecto Mendez Julián &copy; 2024</div>
+</aside>
+
+<div class="main-wrapper">
+    <header class="topbar">
+        <span class="topbar-title" th:text="${modo == 'editar'} ? 'Editar Estudiante' : 'Registrar Estudiante'">Formulario</span>
+        <div class="topbar-actions">
+            <a href="/estudiantes" class="btn btn-outline">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+                Volver
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <div th:if="${errorServicio}" class="alert alert-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+            <span th:text="${errorServicio}"></span>
+        </div>
+
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a href="/dashboard">Dashboard</a> / <a href="/estudiantes">Estudiantes</a> /
+                <span th:text="${modo == 'editar'} ? 'Editar' : 'Nuevo'">Nuevo</span>
+            </div>
+            <h1 th:text="${modo == 'editar'} ? 'Editar Estudiante' : 'Registrar Nuevo Estudiante'">Formulario</h1>
+        </div>
+
+        <div class="card" style="max-width:680px;">
+            <form th:action="${modo == 'editar'} ? @{/estudiantes/{id}/editar(id=${estudianteDTO.estudianteId})} : @{/estudiantes/nuevo}"
+                  th:object="${estudianteDTO}"
+                  method="post"
+                  id="estudianteForm"
+                  novalidate>
+
+                <div class="form-section-title">Datos personales</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="apellido">Apellido <span class="required">*</span></label>
+                        <input type="text" id="apellido" th:field="*{apellido}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('apellido')} ? ' is-invalid' : ''"
+                               placeholder="Ej: García">
+                        <div class="form-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="nombre">Nombre <span class="required">*</span></label>
+                        <input type="text" id="nombre" th:field="*{nombre}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('nombre')} ? ' is-invalid' : ''"
+                               placeholder="Ej: Juan Pablo">
+                        <div class="form-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="dni">DNI <span class="required">*</span></label>
+                    <input type="text" id="dni" th:field="*{dni}"
+                           class="form-control"
+                           th:classappend="${#fields.hasErrors('dni')} ? ' is-invalid' : ''"
+                           placeholder="Ej: 38500123" maxlength="8" inputmode="numeric"
+                           style="max-width:220px;">
+                    <div class="form-error" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
+                    <div class="form-hint">Solo dígitos, sin puntos ni guiones (7 u 8 caracteres).</div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="form-section-title">Información académica</div>
+
+                <div class="form-group">
+                    <label class="form-label">¿Es aspirante a grado? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" th:field="*{aspiranteAGrado}" value="1"> Sí
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" th:field="*{aspiranteAGrado}" value="0"> No
+                        </label>
+                    </div>
+                    <div class="form-error" th:if="${#fields.hasErrors('aspiranteAGrado')}" th:errors="*{aspiranteAGrado}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="proyectoId">Proyecto de grado asignado</label>
+                    <select id="proyectoId" th:field="*{proyectoId}" class="form-control">
+                        <option value="">— Sin proyecto asignado —</option>
+                        <option th:each="p : ${proyectos}"
+                                th:value="${p.proyectoId}"
+                                th:text="${p.titulo != null ? p.titulo : 'Proyecto #' + p.proyectoId}">
+                        </option>
+                    </select>
+                    <div class="form-hint">Opcional. Podés asignarlo después.</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <a href="/estudiantes" class="btn btn-outline">Cancelar</a>
+                    <button type="submit" class="btn btn-gold" id="btnSubmit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span th:text="${modo == 'editar'} ? 'Guardar cambios' : 'Registrar estudiante'">Guardar</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos de Grado · UniGestión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-title">UniGestión</div>
+        <div class="brand-sub">Sistema universitario</div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Principal</div>
+        <a href="/dashboard" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <div class="nav-section-label">Gestión</div>
+        <a href="/estudiantes" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Estudiantes
+        </a>
+        <a href="/proyectos" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Proyectos de Grado
+        </a>
+    </nav>
+    <div class="sidebar-footer">Proyecto Mendez Julián &copy; 2024</div>
+</aside>
+
+<div class="main-wrapper">
+    <header class="topbar">
+        <span class="topbar-title">Proyectos de Grado</span>
+    </header>
+
+    <main class="main-content">
+
+        <div class="page-header">
+            <div class="breadcrumb"><a href="/dashboard">Dashboard</a> / Proyectos de Grado</div>
+            <h1>Proyectos de Grado</h1>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Listado de proyectos</span>
+                <span style="font-size:13px;color:var(--c-muted);"
+                      th:text="'Total: ' + ${#lists.size(proyectos)} + ' proyectos'"></span>
+            </div>
+
+            <div th:if="${#lists.isEmpty(proyectos)}" class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                <p>No hay proyectos registrados.</p>
+            </div>
+
+            <div class="table-wrap" th:unless="${#lists.isEmpty(proyectos)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Objetivo</th>
+                            <th>Viabilidad</th>
+                            <th>Costo</th>
+                            <th>Tiempo</th>
+                            <th>Alcance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${proyectos}">
+                            <td>
+                                <span style="font-weight:600;font-size:14px;"
+                                      th:text="'#' + ${p.proyectoId}"></span>
+                            </td>
+                            <td style="font-weight:500;" th:text="${p.titulo ?: '—'}"></td>
+                            <td style="font-size:13px;color:var(--c-muted);max-width:260px;"
+                                th:text="${p.objetivo ?: '—'}"></td>
+                            <td>
+                                <span class="badge badge-navy" th:text="${p.viabilidadLabel}"></span>
+                            </td>
+                            <td style="font-size:13px;"
+                                th:text="${p.costo != null ? '$' + p.costo : '—'}"></td>
+                            <td style="font-size:13px;" th:text="${p.tiempoDeRealizacion ?: '—'}"></td>
+                            <td style="font-size:13px;color:var(--c-muted);max-width:200px;"
+                                th:text="${p.alcance ?: '—'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

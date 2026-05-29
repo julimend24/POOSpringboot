@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${estudiante.nombreCompleto} + ' · UniGestión'">Detalle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-title">UniGestión</div>
+        <div class="brand-sub">Sistema universitario</div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Principal</div>
+        <a href="/dashboard" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <div class="nav-section-label">Gestión</div>
+        <a href="/estudiantes" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Estudiantes
+        </a>
+        <a href="/proyectos" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Proyectos de Grado
+        </a>
+    </nav>
+    <div class="sidebar-footer">Proyecto Mendez Julián &copy; 2024</div>
+</aside>
+
+<div class="main-wrapper">
+    <header class="topbar">
+        <span class="topbar-title" th:text="${estudiante.nombreCompleto}">Detalle</span>
+        <div class="topbar-actions">
+            <a href="/estudiantes" class="btn btn-outline">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+                Volver
+            </a>
+            <a th:href="@{/estudiantes/{id}/editar(id=${estudiante.estudianteId})}" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Editar
+            </a>
+            <form th:action="@{/estudiantes/{id}/eliminar(id=${estudiante.estudianteId})}"
+                  method="post" onsubmit="return confirmDelete(event, this)">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <div th:if="${exito}" class="alert alert-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span th:text="${exito}"></span>
+        </div>
+
+        <div class="page-header">
+            <div class="breadcrumb">
+                <a href="/dashboard">Dashboard</a> / <a href="/estudiantes">Estudiantes</a> /
+                <span th:text="${estudiante.nombreCompleto}"></span>
+            </div>
+            <h1 th:text="${estudiante.nombreCompleto}">Detalle</h1>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+            <!-- Datos personales -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Datos personales</span>
+                    <span class="badge badge-navy" th:text="'ID #' + ${estudiante.estudianteId}"></span>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-field">
+                        <div class="detail-label">Apellido</div>
+                        <div class="detail-value" th:text="${estudiante.apellido ?: '—'}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="detail-label">Nombre</div>
+                        <div class="detail-value" th:text="${estudiante.nombre ?: '—'}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="detail-label">DNI</div>
+                        <div class="detail-value" style="font-family:monospace;"
+                             th:text="${estudiante.dni ?: '—'}"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="detail-label">Aspirante a grado</div>
+                        <div class="detail-value">
+                            <span th:if="${estudiante.aspiranteAGrado == 1}" class="badge badge-yes">Sí</span>
+                            <span th:unless="${estudiante.aspiranteAGrado == 1}" class="badge badge-no">No</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyecto -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Proyecto de grado</span>
+                </div>
+                <div th:if="${estudiante.proyectos != null}">
+                    <div class="detail-grid" style="grid-template-columns:1fr;">
+                        <div class="detail-field">
+                            <div class="detail-label">Título</div>
+                            <div class="detail-value" style="font-weight:600;"
+                                 th:text="${estudiante.proyectos.titulo ?: '—'}"></div>
+                        </div>
+                        <div class="detail-field" style="margin-top:12px;">
+                            <div class="detail-label">Objetivo</div>
+                            <div class="detail-value" style="font-size:14px;"
+                                 th:text="${estudiante.proyectos.objetivo ?: '—'}"></div>
+                        </div>
+                        <div class="detail-field" style="margin-top:12px;">
+                            <div class="detail-label">Viabilidad</div>
+                            <div class="detail-value" th:text="${estudiante.proyectos.viabilidadLabel}"></div>
+                        </div>
+                        <div class="detail-field" style="margin-top:12px;">
+                            <div class="detail-label">Costo estimado</div>
+                            <div class="detail-value"
+                                 th:text="${estudiante.proyectos.costo != null ? '$' + estudiante.proyectos.costo : '—'}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div th:unless="${estudiante.proyectos != null}" class="empty-state" style="padding:24px 0;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                    <p>Sin proyecto asignado</p>
+                    <a th:href="@{/estudiantes/{id}/editar(id=${estudiante.estudianteId})}"
+                       class="btn btn-outline btn-sm" style="margin-top:10px;">Asignar proyecto</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Docentes -->
+        <div class="card" style="margin-top:24px;">
+            <div class="card-header">
+                <span class="card-title">Docentes asignados</span>
+                <span style="font-size:13px;color:var(--c-muted);"
+                      th:text="${#lists.size(estudiante.docentes)} + ' docente(s)'"></span>
+            </div>
+            <div th:if="${#lists.isEmpty(estudiante.docentes)}" class="empty-state" style="padding:30px 0;">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M2 20a8 8 0 0 1 16 0"/></svg>
+                <p>No hay docentes asignados a este estudiante.</p>
+            </div>
+            <div class="table-wrap" th:unless="${#lists.isEmpty(estudiante.docentes)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Trayectoria</th>
+                            <th>Conocimiento</th>
+                            <th>Experiencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="doc : ${estudiante.docentes}">
+                            <td style="font-weight:500;" th:text="${doc.nombreCompleto}">—</td>
+                            <td style="font-size:13px;color:var(--c-muted);" th:text="${doc.trayectoria ?: '—'}"></td>
+                            <td style="font-size:13px;" th:text="${doc.conocimiento ?: '—'}"></td>
+                            <td style="font-size:13px;" th:text="${doc.experiencia ?: '—'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

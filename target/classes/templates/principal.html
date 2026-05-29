@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard · UniGestión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-title">UniGestión</div>
+        <div class="brand-sub">Sistema universitario</div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Principal</div>
+        <a href="/dashboard" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <div class="nav-section-label">Gestión</div>
+        <a href="/estudiantes" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Estudiantes
+        </a>
+        <a href="/proyectos" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Proyectos de Grado
+        </a>
+    </nav>
+    <div class="sidebar-footer">Proyecto Mendez Julián &copy; 2024</div>
+</aside>
+
+<div class="main-wrapper">
+    <header class="topbar">
+        <span class="topbar-title">Dashboard</span>
+        <div class="topbar-actions">
+            <a href="/estudiantes/nuevo" class="btn btn-gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nuevo estudiante
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <div th:if="${exito}" class="alert alert-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span th:text="${exito}"></span>
+        </div>
+
+        <div class="page-header">
+            <div class="page-header-inner">
+                <div>
+                    <div class="page-header-label">Panel principal</div>
+                    <h1>Sistema de Gestión de Proyectos de Grado</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon navy">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                    <div class="stat-value" th:text="${totalEstudiantes}">0</div>
+                    <div class="stat-label">Estudiantes registrados</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon gold">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                </div>
+                <div>
+                    <div class="stat-value" th:text="${totalProyectos}">0</div>
+                    <div class="stat-label">Proyectos de grado</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                    <div class="stat-value" th:text="${totalAspirantes}">0</div>
+                    <div class="stat-label">Aspirantes a grado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="quick-actions-grid">
+            <a href="/estudiantes" class="quick-action-card">
+                <div class="qa-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                </div>
+                <div class="qa-body">
+                    <div class="qa-title">Gestionar Estudiantes</div>
+                    <div class="qa-desc">Ver, registrar, editar y eliminar estudiantes</div>
+                </div>
+                <svg class="qa-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+            </a>
+            <a href="/proyectos" class="quick-action-card">
+                <div class="qa-icon gold">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                </div>
+                <div class="qa-body">
+                    <div class="qa-title">Proyectos de Grado</div>
+                    <div class="qa-desc">Administrar proyectos, objetivos y viabilidad</div>
+                </div>
+                <svg class="qa-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+            </a>
+            <a href="/estudiantes/nuevo" class="quick-action-card">
+                <div class="qa-icon green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <div class="qa-body">
+                    <div class="qa-title">Registrar Estudiante</div>
+                    <div class="qa-desc">Dar de alta un nuevo estudiante en el sistema</div>
+                </div>
+                <svg class="qa-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+            </a>
+        </div>
+
+        <!-- Últimos estudiantes -->
+        <div class="card" style="margin-top: 32px;">
+            <div class="card-header">
+                <span class="card-title">Últimos estudiantes registrados</span>
+                <a href="/estudiantes" class="btn btn-outline btn-sm">Ver todos</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(ultimosEstudiantes)}" class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <p>No hay estudiantes registrados aún.</p>
+                <a href="/estudiantes/nuevo" class="btn btn-gold" style="margin-top:12px;">Registrar el primero</a>
+            </div>
+
+            <div class="table-wrap" th:unless="${#lists.isEmpty(ultimosEstudiantes)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Aspirante a grado</th>
+                            <th>Proyecto asignado</th>
+                            <th>Ejecución</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="est : ${ultimosEstudiantes}">
+                            <td>
+                                <span style="font-weight:600;" th:text="'#' + ${est.estudianteId}"></span>
+                            </td>
+                            <td>
+                                <span th:if="${est.aspiranteAGrado == 1}" class="badge badge-yes">Sí</span>
+                                <span th:unless="${est.aspiranteAGrado == 1}" class="badge badge-no">No</span>
+                            </td>
+                            <td>
+                                <span th:if="${est.proyectos != null}" class="badge badge-navy"
+                                      th:text="${est.proyectos.titulo != null ? est.proyectos.titulo : 'Proyecto #' + est.proyectos.proyectoId}"></span>
+                                <span th:unless="${est.proyectos != null}" style="color:var(--c-muted);font-size:13px;">Sin proyecto</span>
+                            </td>
+                            <td>
+                                <span th:if="${est.ejecucionProyecto != null}" class="badge badge-navy"
+                                      th:text="'Ejecución #' + ${est.ejecucionProyecto.ejecucionproyectoId}"></span>
+                                <span th:unless="${est.ejecucionProyecto != null}" style="color:var(--c-muted);font-size:13px;">—</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/estudiantes/{id}(id=${est.estudianteId})}" class="btn btn-outline btn-sm">Ver</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
